@@ -59,6 +59,9 @@ public class UserFacade {
             em.persist(r);
             em.getTransaction().commit();
             return u;
+        }catch(Exception e){    
+            em.getTransaction().rollback();
+            throw new UserCreationException("An error occoured. The user was not created.");
         }finally{
             em.close();
         }
@@ -68,7 +71,6 @@ public class UserFacade {
         EntityManager em = emf.createEntityManager();
         User user;
         try {
-            
             user = (User)em.createQuery("SELECT u FROM User u WHERE u.username = :username")
                     .setParameter("username", username).getSingleResult();
             if (user == null || !user.verifyPassword(password)) {
@@ -79,4 +81,5 @@ public class UserFacade {
         }
         return user;
     }
+    
 }

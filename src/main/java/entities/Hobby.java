@@ -31,7 +31,7 @@ public class Hobby implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Basic(optional = false)
     @NotNull
     private String name;
@@ -47,6 +47,13 @@ public class Hobby implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    public Hobby(){}
+    
+    public Hobby(String name, String desc){
+        this.name = name;
+        this.description = desc;
     }
 
     @Override
@@ -68,6 +75,32 @@ public class Hobby implements Serializable {
         }
         return true;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
+    }
+    
+    
 
     @Override
     public String toString() {

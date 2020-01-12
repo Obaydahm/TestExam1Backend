@@ -31,7 +31,7 @@ public class CityInfo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "city")
+    @Column(name = "city", unique = true)
     @Basic(optional = false)
     @NotNull
     private String city;
