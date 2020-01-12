@@ -22,8 +22,8 @@ import javax.validation.constraints.NotNull;
  * @author Obaydah Mohamad
  */
 @Entity
-@Table(name = "roles")
-public class Role implements Serializable {
+@Table(name = "hobbies")
+public class Hobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Column(name = "id")
@@ -31,20 +31,16 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
+    @Column(name = "name")
     @Basic(optional = false)
     @NotNull
-    @Column(name = "role", length = 20)
-    private String role;
+    private String name;
     
-    @ManyToMany(mappedBy = "roleList")
-    private List<User> userList;
-    
-    public Role(){}
+    @Column(name = "description")
+    private String description;
+    @ManyToMany(mappedBy = "hobbies")
+    private List<Person> persons;
 
-    public Role(String role) {
-        this.role = role;
-    }
-    
     public Long getId() {
         return id;
     }
@@ -52,21 +48,30 @@ public class Role implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    public String getRole() {
-        return role;
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Hobby)) {
+            return false;
+        }
+        Hobby other = (Hobby) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
     }
 
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    @Override
+    public String toString() {
+        return "entities.Hobby[ id=" + id + " ]";
     }
     
 }

@@ -1,15 +1,23 @@
 package rest;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import entities.Role;
 import entities.User;
+import errorhandling.UserCreationException;
+import facades.UserFacade;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
@@ -22,7 +30,7 @@ import utils.EMF_Creator;
 public class UserResource {
 
     private static EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.DEV, EMF_Creator.Strategy.CREATE);
-
+    private static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
     @Context
     private UriInfo context;
 
@@ -49,7 +57,27 @@ public class UserResource {
             em.close();
         }
     }
-
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("createadmin")
+    public String createAdmin(String jsonString){
+        JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
+        String username = json.get("username").getAsString();
+        String password = json.get("password").getAsString();
+        Role role = new Role("admin");
+        User u = new User(username, password);
+        
+        try{
+            u.addRole(role);
+            USER_FACADE.createUser(u, role);
+            return u.getUsername()+" has been created!";
+        }catch(UserCreationException e){
+            return e.getMessage();
+        }
+    }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("user")

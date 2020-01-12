@@ -31,13 +31,14 @@ import org.mindrot.jbcrypt.BCrypt;
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "username", length = 25)
+    @Column(name = "username", length = 25, unique = true)
     private String username;
     
     @Basic(optional = false)
@@ -45,6 +46,7 @@ public class User implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "password")
     private String password;
+    
     @JoinTable(
         name = "roles_assigned", 
         joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id")}, 

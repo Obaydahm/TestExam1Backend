@@ -5,10 +5,13 @@
  */
 package facades;
 
+import entities.Role;
 import entities.User;
 import errorhandling.AuthenticationException;
+import errorhandling.UserCreationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import utils.EMF_Creator;
 
 /**
  *a
@@ -26,6 +29,22 @@ public class UserFacade {
             instance = new UserFacade();
         }
         return instance;
+    }
+    
+    public User createUser(User u, Role r) throws UserCreationException{
+        EntityManager em = emf.createEntityManager();
+        try{
+            if(u.getUsername().isEmpty() || u.getUsername() == null) throw new UserCreationException("You must enter a username!");
+            if(u.getPassword().isEmpty() || u.getPassword() == null) throw new UserCreationException("You must enter a password!"); 
+            
+            em.getTransaction().begin();
+            em.persist(u);
+            em.persist(r);
+            em.getTransaction().commit();
+            return u;
+        }finally{
+            em.close();
+        }
     }
     
     public User getUser(String username, String password) throws AuthenticationException {
