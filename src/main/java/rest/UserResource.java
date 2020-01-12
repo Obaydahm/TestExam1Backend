@@ -21,6 +21,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import org.eclipse.persistence.exceptions.DatabaseException;
 import utils.EMF_Creator;
 
 /**
@@ -67,13 +68,11 @@ public class UserResource {
         String username = json.get("username").getAsString();
         String password = json.get("password").getAsString();
         Role role = new Role("admin");
-        User u = new User(username, password);
         
         try{
-            u.addRole(role);
-            USER_FACADE.createUser(u, role);
-            return u.getUsername()+" has been created!";
-        }catch(UserCreationException e){
+            USER_FACADE.createUser(username, password, role);
+            return username+" has been created!";
+        }catch(UserCreationException | DatabaseException e){
             return e.getMessage();
         }
     }

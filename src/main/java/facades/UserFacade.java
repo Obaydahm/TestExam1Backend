@@ -11,6 +11,7 @@ import errorhandling.AuthenticationException;
 import errorhandling.UserCreationException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import utils.EMF_Creator;
 
 /**
@@ -31,12 +32,28 @@ public class UserFacade {
         return instance;
     }
     
-    public User createUser(User u, Role r) throws UserCreationException{
+    public Long usernameValidation(String uname){
         EntityManager em = emf.createEntityManager();
         try{
-            if(u.getUsername().isEmpty() || u.getUsername() == null) throw new UserCreationException("You must enter a username!");
-            if(u.getPassword().isEmpty() || u.getPassword() == null) throw new UserCreationException("You must enter a password!"); 
+            TypedQuery<Long> tq = em.createQuery("SELECT count(u) FROM User u WHERE u.username = :uname", Long.class).setParameter("uname", uname);
+            return tq.getSingleResult();
+        }finally{
+            em.close();
+        }
+        
+    }
+    
+    public User createUser(String username, String password, Role r) throws UserCreationException{
+        EntityManager em = emf.createEntityManager();
+        User u;
+        try{
             
+            if(username.isEmpty() || username == null) throw new UserCreationException("You must enter a username!");
+            if(password.isEmpty() || password == null) throw new UserCreationException("You must enter a password!"); 
+            if(usernameValidation(username) > 0) throw new UserCreationException("Username already exists!");
+            
+            u = new User(username, password);
+            u.addRole(r);
             em.getTransaction().begin();
             em.persist(u);
             em.persist(r);
