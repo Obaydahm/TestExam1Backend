@@ -1,5 +1,6 @@
 package rest;
 
+import entities.Role;
 import entities.User;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
