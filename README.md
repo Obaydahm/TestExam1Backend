@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/dat3startcode/rest-jpa-devops-startcode.svg?branch=master)](https://travis-ci.org/dat3startcode/rest-jpa-devops-startcode)
+[![Build Status](https://travis-ci.org/Obaydahm/TestExam1Backend.svg?branch=master)](https://travis-ci.org/Obaydahm/TestExam1Backend)
 
 ### Preconditions
 *In order to use this code, you should have a local developer setup + a "matching" droplet on Digital Ocean* 
