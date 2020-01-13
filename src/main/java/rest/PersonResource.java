@@ -9,11 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dto.PersonDTO;
 import entities.Address;
-import entities.Hobby;
 import entities.Person;
-import errorhandling.HobbyCreationException;
-import facades.HobbyFacadeImpl;
 import facades.PersonFacadeImpl;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
@@ -98,12 +96,13 @@ public class PersonResource {
         String city = json.get("address").getAsJsonObject().get("city").getAsString();
         int zip = json.get("address").getAsJsonObject().get("zip").getAsInt();
         Person p;
+        PersonDTO pDTO;
         Address a;
         try {
             p = new Person(firstname, lastname, email, phone);
             p.setAddress(new Address(street, city, zip));
-            FACADE.addPerson(p);
-             return "{ \"status\": \"" +p.getFirstname()+ " " + p.getLastname() + " has been added!\"}";
+            pDTO = FACADE.addPerson(p);
+             return "{ \"status\": \"" +pDTO.getFn()+ " " + pDTO.getLn() + " has been added!\"}";
         } catch (Exception e) {
             return "{ \"status\": \"" + e.getMessage() + "\"}";
         }

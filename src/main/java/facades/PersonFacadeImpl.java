@@ -5,10 +5,13 @@
  */
 package facades;
 
+import dto.PersonDTO;
 import entities.Address;
 import entities.Hobby;
 import entities.Person;
 import errorhandling.NotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -34,8 +37,9 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
     }
 
     @Override
-    public Person getPersonByID(String id) throws NotFoundException {
+    public List<PersonDTO> getPersonByID(String id) throws NotFoundException {
         EntityManager em = emf.createEntityManager();
+        List<PersonDTO> persons = new ArrayList<>();
         try {
             try {
                 Long.parseLong(id);
@@ -46,21 +50,22 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
             if (p == null) {
                 throw new NotFoundException("Person with ID " + id + " doesn't exist!");
             }
-            return p;
+            persons.add(new PersonDTO(p));
+            return persons;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Person getPersonByEmail(String email) throws NoResultException {
+    public List<PersonDTO> getPersonByEmail(String email) throws NoResultException {
         EntityManager em = emf.createEntityManager();
         if (email.isEmpty() || email == null) {
             throw new IllegalArgumentException("You must enter a email!");
         }
         try {
-            return em.createQuery("SELECT p FROM Person p WHERE p.email = :email", Person.class)
-                    .setParameter("email", email).getSingleResult();
+            return em.createQuery("SELECT new dto.PersonDTO(p) FROM Person p WHERE p.email = :email", PersonDTO.class)
+                    .setParameter("email", email).getResultList();
         } catch (NoResultException e) {
             throw new NoResultException(email + " is not assigned to any persons!");
         } finally {
@@ -69,7 +74,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
     }
 
     @Override
-    public Person getPersonByPhone(String phone) throws NoResultException {
+    public List<PersonDTO> getPersonByPhone(String phone) throws NoResultException {
         EntityManager em = emf.createEntityManager();
         if (phone.isEmpty() || phone == null) {
             throw new IllegalArgumentException("You must enter a phonenumber!");
@@ -80,8 +85,8 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
             throw new NoResultException("The phonenumber must be numeric!");
         }
         try {
-            return em.createQuery("SELECT p FROM Person p WHERE p.phone = :phone", Person.class)
-                    .setParameter("phone", phone).getSingleResult();
+            return em.createQuery("SELECT new dto.PersonDTO(p) FROM Person p WHERE p.phone = :phone", PersonDTO.class)
+                    .setParameter("phone", phone).getResultList();
         } catch (NoResultException e) {
             throw new NoResultException(phone + " is not assigned to any persons!");
         } finally {
@@ -90,7 +95,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
     }
 
     @Override
-    public Person getPersonsByHobby(Hobby h) throws NoResultException {
+    public List<PersonDTO> getPersonsByHobby(Hobby h) throws NoResultException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
@@ -113,7 +118,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
     }
 
     @Override
-    public Person addPerson(Person p) {
+    public PersonDTO addPerson(Person p) {
         EntityManager em = emf.createEntityManager();
         boolean addressExists = true;
         try {
@@ -136,7 +141,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
             em.getTransaction().commit();
             
             System.out.println(p);
-            return p;
+            return new PersonDTO(p);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException("An error occoured. The person was not created.");
@@ -146,7 +151,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
     }
 
     @Override
-    public Person deletePerson(String id) throws NotFoundException {
+    public PersonDTO deletePerson(String id) throws NotFoundException {
         EntityManager em = emf.createEntityManager();
         if (id.isEmpty() || id == null) {
             throw new IllegalArgumentException("You must enter an ID!");
@@ -163,7 +168,7 @@ public class PersonFacadeImpl implements PersonFacadeInterface {
             Person p = em.find(Person.class, Long.valueOf(id));
             em.remove(p);
             em.getTransaction().commit();
-            return p;
+            return new PersonDTO(p);
         } catch (Exception e) {
             em.getTransaction().rollback();
             throw new IllegalArgumentException("An error occoured. The hobby was not deleted.");

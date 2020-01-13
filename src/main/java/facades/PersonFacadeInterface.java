@@ -5,10 +5,11 @@
  */
 package facades;
 
-import entities.Address;
+import dto.PersonDTO;
 import entities.Hobby;
 import entities.Person;
 import errorhandling.NotFoundException;
+import java.util.List;
 import javax.persistence.NoResultException;
 
 /**
@@ -16,10 +17,10 @@ import javax.persistence.NoResultException;
  * @author Obaydah Mohamad
  */
 public interface PersonFacadeInterface {
-    public Person getPersonByID(String id) throws NotFoundException;
-    public Person getPersonByEmail(String email) throws NoResultException;
-    public Person getPersonByPhone(String phone) throws NoResultException;
-    public Person getPersonsByHobby(Hobby h) throws NoResultException;
-    public Person addPerson(Person p);
-    public Person deletePerson(String id) throws NotFoundException;
+    public List<PersonDTO> getPersonByID(String id) throws NotFoundException;
+    public List<PersonDTO> getPersonByEmail(String email) throws NoResultException;
+    public List<PersonDTO> getPersonByPhone(String phone) throws NoResultException;
+    public List<PersonDTO> getPersonsByHobby(Hobby h) throws NoResultException;
+    public PersonDTO addPerson(Person p);
+    public PersonDTO deletePerson(String id) throws NotFoundException;
 }
