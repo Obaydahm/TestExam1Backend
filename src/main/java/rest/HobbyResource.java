@@ -53,8 +53,7 @@ public class HobbyResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("all")
     public String allHobbies() {
-        List<Hobby> hobbies = HOBBY_FACADE.getAllHobbies();
-        return "[" + hobbies.size() + "]";
+        return GSON.toJson(HOBBY_FACADE.getAllHobbies());
     }
     
     @POST

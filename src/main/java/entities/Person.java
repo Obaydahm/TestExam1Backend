@@ -65,8 +65,17 @@ public class Person implements Serializable {
     
     @JoinColumn(name = "address_id")
     @NotNull
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @ManyToOne
     private Address address;
+    
+    public Person (){}
+
+    public Person(String firstname, String lastname, String email, String phone) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.phone = phone;
+    }
     
     public Long getId() {
         return id;
@@ -75,6 +84,56 @@ public class Person implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public List<Hobby> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<Hobby> hobbies) {
+        this.hobbies = hobbies;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+    
+    
 
     @Override
     public int hashCode() {
@@ -98,7 +157,9 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Person[ id=" + id + " ]";
+        return "Person{" + "id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email + ", phone=" + phone + ", hobbies=" + hobbies + ", address=" + address + '}';
     }
+
+    
     
 }

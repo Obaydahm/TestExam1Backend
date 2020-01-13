@@ -34,17 +34,33 @@ public class Address implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "street", unique = true)
+    @Column(name = "street")
     @NotNull
     @Basic(optional = false)
     private String street;
     
-    @JoinColumn(name = "cityinfo_id")
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private CityInfo cityInfo;
+    @Column(name = "city")
+    @Basic(optional = false)
+    @NotNull
+    private String city;
+    
+    @Column(name = "zip")
+    @Basic(optional = false)
+    @NotNull
+    private int zip;
     
     @OneToMany(mappedBy = "address")
     private List<Person> persons;
+    
+    public Address(){}
+
+    public Address(String street, String city, int zip) {
+        this.street = street;
+        this.city = city;
+        this.zip = zip;
+    }
+    
+    
 
     public Long getId() {
         return id;
@@ -53,6 +69,40 @@ public class Address implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public int getZip() {
+        return zip;
+    }
+
+    public void setZip(int zip) {
+        this.zip = zip;
+    }
+
+    public List<Person> getPersons() {
+        return persons;
+    }
+
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
+    }
+    
+    
 
     @Override
     public int hashCode() {
@@ -76,7 +126,8 @@ public class Address implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Address[ id=" + id + " ]";
+        return "\nAddress{" + "id=" + id + ", street=" + street + ", city=" + city + ", zip=" + zip + ", persons=" + persons + '}';
     }
+    
     
 }
